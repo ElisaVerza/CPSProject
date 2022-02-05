@@ -23,7 +23,7 @@ class DataAnalysis:
             r = requests.get(url_base + '/' + str(i) + '/indicator?format=json&page=1&per_page=' + str(tot),
                              allow_redirects=True)
             json_object = r.json()
-            with open('indicator' + str(i).zfill(2) + 'topic.json', 'w', encoding='utf-8') as f:
+            with open('../resources/indicator' + str(i).zfill(2) + 'topic.json', 'w', encoding='utf-8') as f:
                 json.dump(json_object, f)
         return
 
