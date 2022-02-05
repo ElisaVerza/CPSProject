@@ -1,0 +1,7 @@
+# Serve a dire ai build tools (es. pip e build) cosa è necessario per fare il build del progetto
+[build-system]
+requires = [ # la lista di package necessari per il build del NOSTRO package
+    "setuptools>=42", # sono disponibili solo dopo la build, non dopo l'installazione
+    "wheel"
+]
+build-backend = "setuptools.build_meta" # un oggetto python che è usato per la build. Build system alternativi sono "flit" e "poetry"
