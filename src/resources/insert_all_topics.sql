@@ -1,0 +1,1 @@
+INSERT INTO topics(topic_id, topic_value, topic_source_note) VALUES (?, ?, ?)
