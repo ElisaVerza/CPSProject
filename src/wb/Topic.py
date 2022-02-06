@@ -1,4 +1,8 @@
 class Topic:
+    """
+    Classe che racchiude tutte le informazioni di un Topic di WorldBank
+    """
+
     def __init__(self, topic_id: int, value: str, source_note: str):
         self.id = topic_id
         self.value = value
