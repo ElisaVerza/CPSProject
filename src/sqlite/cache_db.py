@@ -106,7 +106,7 @@ class CacheDB:
         cursor = self.conn.cursor()
         try:
             sql_get_topic = open("../resources/get_topic.sql").read()
-            cursor.execute(sql_get_topic, id)
+            cursor.executescript(sql_get_topic, id)
             topic_tuple = cursor.fetchone()
             return Topic(topic_tuple[0], topic_tuple[1], topic_tuple[2])
         except sqlite3.Error as error:

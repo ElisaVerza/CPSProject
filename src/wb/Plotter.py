@@ -10,12 +10,16 @@ class Plotter:
         self.info = dict_info
 
     def observable_plot(self, plt_num):
+        """
+        Grafica un numero qualsiasi di osservabili
+        :param plt_num:  Numero osservabili
+        :return:
+        """
         fig, ax = plt.subplots()
         for i in range(plt_num):
             ax.plot(self.info["years"][i], self.info["values"][i], marker='o')
-        plt.show()
-        #TODO: Come vanno salvati i plot?
-        return
+
+        return plt
 
     def media_mobile(self):
         # TODO: metodo per calcolare e graficare media mobile
