@@ -18,7 +18,7 @@ class MyTestCase(unittest.TestCase):
         self.assertIsNotNone(topic)
         # TODO: UPDATE topic
         # DELETE: controllo se un topic è stato eliminato correttamente
-        self.db.remove_topic(999)
+        self.db.delete_topic(999)
         topic_none = self.db.get_topic(999)
         self.assertIsNone(topic_none)
 

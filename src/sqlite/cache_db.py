@@ -1,18 +1,14 @@
+import os
 import sqlite3
 import logging
 from sqlite3 import Connection
 from typing import Optional, List
 
+from src.sqlite.constants import *
 from src.wb.Indicator import Indicator
 from src.wb.Observable import Observable
 from src.wb.Topic import Topic
 
-RESOURCE_FOLD = "../../resources/"
-DB_NAME = RESOURCE_FOLD + "cache.db"
-CREATE_TABLE_FILE = RESOURCE_FOLD + "create_tables.sql"
-INSERT_ALL_TOPICS = RESOURCE_FOLD + "insert_all_topics.sql"
-GET_TOPIC = RESOURCE_FOLD + "get_topic.sql"
-REMOVE_TOPIC = RESOURCE_FOLD + "remove_topic.sql"
 
 # def db_exists(db_name: str) -> bool:
 #     return os.path.exists(pathlib.Path(db_name))
@@ -20,6 +16,10 @@ REMOVE_TOPIC = RESOURCE_FOLD + "remove_topic.sql"
 
 # I metodi che iniziano per '_' non dovrebbero essere chiamati dagli utenti che usano il package
 class CacheDB:
+    """
+    Questa classe permette di gestire il database cache per i dati scaricati da WorldBank (Observable, Indicator, Topic)
+    """
+
     def __init__(self, name=DB_NAME):
         """
         Costruttore di CacheDB. Inizializza la connessione al database e la salva in una variabile d'istanza.
@@ -30,14 +30,13 @@ class CacheDB:
     def __del__(self):
         """
         Distruttore di CacheDB. Prima di distruggere l'oggetto, si disconnette dal database
-        :return:
         """
         self._disconnect()
 
     def _connect(self, name: str) -> Optional[Connection]:
         """
         Prova a connettersi a un database cache.db. Se non esiste ne crea uno nuovo.
-        :return: Connection or None
+        :return: Connection o None
         """
         conn = None
         try:
@@ -54,11 +53,8 @@ class CacheDB:
         # Apro un cursore
         cursor = self.conn.cursor()
 
-        # Apro il file che permette di creare le tabelle
-        file = open(CREATE_TABLE_FILE, 'r')
-
         # Eseguo lo script SQL contenuto nel file
-        cursor.executescript(file.read())
+        cursor.executescript(CREATE_TABLE_QUERY)
 
         # Eseguo il Commit dell'operazione
         self.conn.commit()
@@ -82,9 +78,8 @@ class CacheDB:
         """
         cursor = self.conn.cursor()
         try:
-            sql_insert_with_3_params = open(INSERT_ALL_TOPICS, "r").read()
             for topic in all_topics:
-                cursor.execute(sql_insert_with_3_params, topic.to_tuple())
+                cursor.execute(INSERT_ALL_TOPICS, topic.to_tuple())
             self.conn.commit()
         except sqlite3.Error as error:
             logging.error("Impossibile inserire i topics: ", error)
@@ -110,10 +105,9 @@ class CacheDB:
         cursor = self.conn.cursor()
         topic = None
         try:
-            sql_get_topic = open(GET_TOPIC).read()
-            cursor.execute(sql_get_topic, {"topic_id": topic_id})
+            cursor.execute(GET_TOPIC, {"topic_id": topic_id})
             topic_tuple = cursor.fetchone()
-            topic = Topic(topic_tuple[0], topic_tuple[1], topic_tuple[2])
+            topic = Topic(topic_tuple[0], topic_tuple[1], topic_tuple[2])  # topic_tuple puo essere nulla
         except sqlite3.Error as error:
             logging.error("Impossibile inserire i topics: ", error)
         except TypeError:
@@ -129,16 +123,29 @@ class CacheDB:
     def get_observable(self, id: int) -> Optional[Observable]:
         pass
 
-    def remove_topic(self, topic_id: int):
+    def delete_topic(self, topic_id: int):
         cursor = self.conn.cursor()
         try:
-            sql_remove_topic = open(REMOVE_TOPIC).read()
-            cursor.execute(sql_remove_topic, {"topic_id": topic_id})
+            cursor.execute(REMOVE_TOPIC, {"topic_id": topic_id})
         except sqlite3.Error as error:
             logging.error("Impossibile inserire i topics: ", error)
         finally:
             cursor.close()
 
+    def delete_indicator(self, obs_id: int):
+        pass
+
+    def delete_observable(self, obs_id: int):
+        pass
+
+    def update_topic(self, t: Topic):
+        pass
+
+    def update_indicator(self, i: Indicator):
+        pass
+
+    def update_observable(self, o: Observable):
+        pass
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
