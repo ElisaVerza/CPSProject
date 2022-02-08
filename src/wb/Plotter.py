@@ -3,7 +3,7 @@
 import matplotlib.pyplot as plt
 
 
-import numpy as np
+# import numpy as np
 
 class Plotter:
     def __init__(self, dict_info):
@@ -12,8 +12,8 @@ class Plotter:
     def observable_plot(self, plt_num):
         """
         Grafica un numero qualsiasi di osservabili
-        :param plt_num:  Numero osservabili
-        :return:
+        :param plt_num: Numero osservabili
+        :return: il grafico degli osservabili
         """
         fig, ax = plt.subplots()
         for i in range(plt_num):

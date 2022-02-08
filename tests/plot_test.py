@@ -3,7 +3,7 @@ from src.wb.Plotter import Plotter
 import numpy as np
 
 
-class MyTestCase(unittest.TestCase):
+class PlotTestCase(unittest.TestCase):
 
     def test_three_obs(self):
         print("Sono qui")
