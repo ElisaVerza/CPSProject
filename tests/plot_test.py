@@ -1,24 +1,35 @@
-import unittest
+from typing import List
+
+from src.wb.Observable import Observable
+
 from src.wb.Plotter import Plotter
+import src.wb.download_wb as dl
 import numpy as np
 
 
-class PlotTestCase(unittest.TestCase):
+def test_three_obs(ind: List[str], country: List[str]):
+    # TODO: Istruzione cerca osservabili su db
+    param_dict = []
+    for i in range(len(ind)):
+        all_values = dl.download_observables_of_indicator(ind[i], country[i])
+        param_dict.append({"indicator": all_values[0].indicator_id,
+                           "country": all_values[0].country,
+                           "years": [],
+                           "values": []
+                           })
+        for obs in all_values:
+            if obs.value is None:
+                obs.value = 0
 
-    def test_three_obs(self):
-        print("Sono qui")
+            param_dict[i].get("years").insert(0, obs.date)
+            param_dict[i].get("values").insert(0, obs.value)
+            print(param_dict[i])
 
-        param_dict = {"indicator": "Nome Indicatore",
-                      "country": "Nazione Indicatore",
-                      "years": np.asarray([[2001, 2002, 2003, 2004], [2001, 2002, 2003, 2004]]),
-                      "values": np.asarray([[1, 2, 3, 4], [7, 8, 5, 4]])
-                      }
+    obs_plt = Plotter(param_dict)
+    obs_plt.observable_plot().show()
 
-        obs_plt = Plotter(param_dict)
-        obs_plt.observable_plot(2).show()
-
-        return
+    return
 
 
-if __name__ == '__main__':
-    unittest.main()
+if __name__ == "__main__":
+    test_three_obs(ind=['AG.AGR.TRAC.NO', 'AG.AGR.TRAC.NO', 'AG.AGR.TRAC.NO'], country=['usa', 'HPC', 'LIE'])

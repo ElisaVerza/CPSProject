@@ -9,15 +9,15 @@ class Plotter:
     def __init__(self, dict_info):
         self.info = dict_info
 
-    def observable_plot(self, plt_num):
+    def observable_plot(self):
         """
         Grafica un numero qualsiasi di osservabili
-        :param plt_num: Numero osservabili
         :return: il grafico degli osservabili
         """
         fig, ax = plt.subplots()
-        for i in range(plt_num):
-            ax.plot(self.info["years"][i], self.info["values"][i], marker='o')
+        for i in self.info:
+            ax.plot(i["years"], i["values"], marker='o')
+            plt.xticks(rotation='vertical')
 
         return plt
 

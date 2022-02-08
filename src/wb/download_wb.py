@@ -72,17 +72,16 @@ def download_indicator(indicator_id: str) -> Optional[Indicator]:
     return None
 
 
-def download_observables_of_indicator(i: Indicator, country: str) -> List[Observable]:
+def download_observables_of_indicator(i: str, country: str) -> List[Observable]:
     # Scarico json degli osservatori per indicatore e paese
-    r: requests.Response = requests.get(FORMAT_OBSERVABLE_URL.format(country, i.indicator_id, 1),
+    r: requests.Response = requests.get(FORMAT_OBSERVABLE_URL.format(country, i, 1),
                                         allow_redirects=True)
     json_total = r.json()[0].get("total")
 
     if json_total == 0:
-        logging.warning("Attenzione non sono stati trovati osservabili per l'indicatore ", i.indicator_id)
+        logging.warning("Attenzione non sono stati trovati osservabili per l'indicatore ", i)
         return []
-
-    r: requests.Response = requests.get(FORMAT_OBSERVABLE_URL.format(country, i.indicator_id, json_total),
+    r: requests.Response = requests.get(FORMAT_OBSERVABLE_URL.format(country, i, json_total),
                                         allow_redirects=True)
     observables = r.json()[1]
     all_values: List[Observable] = []
