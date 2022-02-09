@@ -1,5 +1,7 @@
 # import matplotlib as mpl
 # import matplotlib.pyplot
+from typing import List
+
 import matplotlib.pyplot as plt
 
 
@@ -14,10 +16,22 @@ class Plotter:
         Grafica un numero qualsiasi di osservabili
         :return: il grafico degli osservabili
         """
+        rotation = 70
         fig, ax = plt.subplots()
+        ind: List[str] = []
+        c: List[str] = []
         for i in self.info:
-            ax.plot(i["years"], i["values"], marker='o')
-            plt.xticks(rotation='vertical')
+            ind.append(i["indicator"])
+            c.append(i["country"])
+            ax.plot(i["years"], i["values"], marker='o', label=i["country"])
+        ax.ticklabel_format(style='plain', axis='y')
+        plt.legend(loc="upper left")
+        plt.xticks(rotation=rotation)
+        plt.yticks(rotation=rotation)
+        plt.xlabel("Date", labelpad=20)
+        plt.ylabel("Value", labelpad=20)
+        plt.grid(linestyle='--', linewidth=0.5)
+        plt.title("Indicator = {}, Country = {}".format(ind, c), loc='left', pad=20)
 
         return plt
 

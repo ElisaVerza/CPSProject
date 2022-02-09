@@ -18,13 +18,9 @@ def test_three_obs(ind: List[str], country: List[str]):
                            "values": []
                            })
         for obs in all_values:
-            if obs.value is None:
-                obs.value = 0
 
             param_dict[i].get("years").insert(0, obs.date)
-            param_dict[i].get("values").insert(0, obs.value)
-            print(param_dict[i])
-
+            param_dict[i].get("values").insert(0, obs.value if obs.value is not None else 0)
     obs_plt = Plotter(param_dict)
     obs_plt.observable_plot().show()
 
