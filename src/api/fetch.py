@@ -2,6 +2,7 @@ from typing import List, Optional
 
 from src.sqlite.cache_db import CacheDB
 from src.wb.Indicator import Indicator
+from src.wb.Observable import Observable
 from src.wb.Topic import Topic
 from src.wb import download_wb
 
@@ -69,6 +70,9 @@ def all_indicators_from_topic(topic: Topic, force_update=False) -> List[Indicato
     # ... e aggiorno il database (se un topic già era presente, lo sostituisce)
     db.save_all_indicators(indicator_list)
     return indicator_list
+
+def all_observable_of_indicator(indicator_id: str, country: str, force_update=False) -> List[Observable]:
+    return [Observable(indicator_id, country, None, None)] # todo restituire la lista di observable
 
 
 if __name__ == '__main__':

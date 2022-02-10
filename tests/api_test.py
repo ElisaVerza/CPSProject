@@ -26,12 +26,11 @@ class ApiTestCase(unittest.TestCase):
         self.assertListEqual(topics_from_db, downloaded_topics, "Le due liste non corrispondono")
 
     def test_indicator(self):
-        # prima elimino tutti i topic dal database
         db = cache_db.CacheDB()
         # db.delete_all_indicators() # LENTO
 
         # li scarico
-        topic = fetch.one_topic(3)
+        topic = fetch.one_topic(3)  # Economy and Growth
         wb_indicators = fetch.all_indicators_from_topic(topic)
 
         # controllo che siano stati scaricati dati

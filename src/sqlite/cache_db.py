@@ -68,7 +68,7 @@ class CacheDB:
             self.conn.close()
             logging.debug("Chiusa la connessione con il cache db")
 
-    def _save_one(self, object_tuple: Tuple, insert_str: str):
+    def _save_one(self, insert_str: str, object_tuple: Tuple):
         cursor = self.conn.cursor()
         try:
             cursor.execute(insert_str, object_tuple)
@@ -177,7 +177,7 @@ class CacheDB:
         for indicator in all_indicators:
             indicator_topics = indicator.indicator_topic_list()
             for row in indicator_topics:
-                self._save_one(row, const.INSERT_INDICATOR_TOPICS)
+                self._save_one(const.INSERT_INDICATOR_TOPICS, row)
 
     def save_observable(self, o: Observable):
         pass

@@ -34,3 +34,5 @@ GET_INDICATORS_FROM_TOPIC_ID = "SELECT it.indicator_id FROM indicator_topics it 
 UPDATE_INDICATOR = "UPDATE indicators SET indicator_name = ?, sourceNote = ? WHERE indicator_id= ?"
 REMOVE_INDICATOR = "DELETE FROM indicators WHERE indicator_id = :indicator_id"
 REMOVE_INDICATOR_TOPICS = "DELETE FROM indicator_topics WHERE indicator_id = :indicator_id"
+
+# QUERY PER OBSERVABLES TODO

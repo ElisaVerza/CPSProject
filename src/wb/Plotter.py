@@ -1,13 +1,15 @@
 # import matplotlib as mpl
 # import matplotlib.pyplot
-from typing import List
+from typing import List, Dict
 
 import matplotlib.pyplot as plt
 import numpy as np
 
+from src.wb.Observable import Observable
+
 
 class Plotter:
-    def __init__(self, dict_info):
+    def __init__(self, dict_info: List[Dict]): # TODO:  cambiare a lista di observable
         self.info = dict_info
 
     def observable_plot(self):
@@ -23,10 +25,9 @@ class Plotter:
             c.append(i["country"])
             ax.plot(i["years"], i["values"], marker='o', label=i["country"])
         self.make_graph(ax, ind, c)
-
         return plt
 
-    def media_mobile(self, w):
+    def media_mobile(self, w: int):
         points = []
         finestra = 0
         val = self.info["values"]
@@ -42,7 +43,7 @@ class Plotter:
         ax.plot(self.info["years"][:len(points)], points, marker='o')
         self.make_graph(ax, self.info["indicator"], self.info["country"])
 
-        return plt
+        return plt # TODO: Restituire l'oggetto grafico
 
     def diff_prime(self):
         # TODO: metodo per calcolare e graficare differenze prime
@@ -52,9 +53,11 @@ class Plotter:
         # TODO: metodo per calcolare e graficare differenze prime percentuali
         return
 
-    def covarianza(self):
-        # TODO: metodo per calcolare e graficare differenze prime percentuali
-        return
+    def covarianza(self, obs: List[Observable]) -> float:
+        media_campionaria = None
+        # covar = 1/n Sum(k=1^n) (x_k, media_campionaria)^2
+        # TODO: metodo per calcolare e graficare covarianza
+        return 0.0
 
     def retta_reg(self):
         """
@@ -90,7 +93,6 @@ class Plotter:
         plt.ylabel("Value", labelpad=20)
         plt.grid(linestyle='--', linewidth=0.5)
         plt.title("Indicator = {}, Country = {}".format(ind_label, c_label), loc='left', pad=20)
-        return
 
 
 if __name__ == "__main__":

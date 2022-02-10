@@ -97,4 +97,4 @@ def download_observables_of_indicator(i: str, country: str) -> List[Observable]:
 if __name__ == "__main__":
     topic_array = download_all_topics()
     indicator_array = download_indicators_for_topic(topic_array[0])
-    print(download_observables_of_indicator(indicator_array[0], "usa"))
+    print(download_observables_of_indicator(indicator_array[0].indicator_id, "usa"))
