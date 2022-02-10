@@ -26,9 +26,23 @@ class Plotter:
 
         return plt
 
-    def media_mobile(self):
-        # TODO: metodo per calcolare e graficare media mobile
-        return
+    def media_mobile(self, w):
+        points = []
+        finestra = 0
+        val = self.info["values"]
+        list(map(int, val))
+        for i in range(w):
+            finestra += val[i]
+
+        for i in range(w, len(val)):
+            print(i)
+            points.append(finestra / w)
+            finestra = finestra + val[i] - val[i - w]
+        fig, ax = plt.subplots()
+        ax.plot(self.info["years"][:len(points)], points, marker='o')
+        self.make_graph(ax, self.info["indicator"], self.info["country"])
+
+        return plt
 
     def diff_prime(self):
         # TODO: metodo per calcolare e graficare differenze prime
@@ -67,8 +81,7 @@ class Plotter:
 
         return plt
 
-    @staticmethod
-    def make_graph(ax: plt.axes, ind_label, c_label):
+    def make_graph(self, ax: plt.axes, ind_label, c_label):
         rotation = 70
         ax.ticklabel_format(style='plain', axis='y')
         plt.xticks(rotation=rotation)
@@ -81,6 +94,7 @@ class Plotter:
 
 
 if __name__ == "__main__":
-    x = [2000, 2001, 2002, 2003]
-    y = [3, 765, 123, 87]
+    x = [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009]
+    y = [3, 765, 123, 87, 234, 23, 234, 677, 987, 19]
     dit = {}
+    Plotter(dict).media_mobile(y, 3)
