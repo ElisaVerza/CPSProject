@@ -18,7 +18,6 @@ def test_three_obs(ind: List[str], country: List[str]):
                            "values": []
                            })
         for obs in all_values:
-
             param_dict[i].get("years").insert(0, obs.date)
             param_dict[i].get("values").insert(0, obs.value if obs.value is not None else 0)
     obs_plt = Plotter(param_dict)
@@ -27,5 +26,22 @@ def test_three_obs(ind: List[str], country: List[str]):
     return
 
 
+def test_retta_reg(ind: str, country: str):
+    # TODO: Istruzione cerca osservabili su db
+    values = dl.download_observables_of_indicator(ind, country)
+    param_dict = {"indicator": values[0].indicator_id,
+                  "country": values[0].country,
+                  "years": [],
+                  "values": []
+                  }
+    for obs in values:
+        param_dict.get("years").insert(0, obs.date)
+        param_dict.get("values").insert(0, obs.value if obs.value is not None else 0)
+    reg = Plotter(param_dict)
+    reg.retta_reg().show()
+
+    return
+
+
 if __name__ == "__main__":
-    test_three_obs(ind=['AG.AGR.TRAC.NO', 'AG.AGR.TRAC.NO', 'AG.AGR.TRAC.NO'], country=['usa', 'HPC', 'LIE'])
+    test_three_obs(ind=['AG.AGR.TRAC.NO', 'AG.AGR.TRAC.NO', 'AG.AGR.TRAC.NO'], country=['usa', 'afe', 'cpv'])
