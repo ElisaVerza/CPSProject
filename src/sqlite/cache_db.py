@@ -231,8 +231,8 @@ class CacheDB:
             indicator_list.append(self.get_indicator(indicator_id_tuple[0]))
         return indicator_list
 
-    def get_observable(self, observable_id: int) -> Optional[Observable]:
-        pass
+    def get_observables_of_indicator(self, indicator_id: str) -> List[Observable]:
+        return []
 
     def delete_topic(self, topic_id: int):
         """

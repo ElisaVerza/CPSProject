@@ -12,9 +12,25 @@ def one_topic(topic_id: int, force_update=False) -> Optional[Topic]:
     Ricava un topic dato il suo id. Se possibile lo prende dal database, altrimenti lo scarica da WorldBank
     :return: il topic richiesto
     """
-    the_topics = all_topics(force_update)
-    # Alternativa al for: prende il primo topic con id dato in input tra gli all_topics, altrimenti None.
-    return next(filter(lambda top: top.topic_id == topic_id, the_topics), None)
+    db = CacheDB()  # mi connetto al database
+
+    if not force_update:
+        # provo a prendere tutti i topic dal database
+        topic = db.get_topic(topic_id)
+
+        # se trovo almeno un topic restituisco la lista
+        if topic is not None:
+            return topic
+
+    # se non trovo niente, scarico da WorldBank
+    topic = download_wb.download_topic(topic_id)
+    # ... e aggiorno il database (se un topic già era presente, lo sostituisce)
+    db.save_all_topics([topic])
+    return topic
+
+    # the_topics = all_topics(force_update)
+    # # Alternativa al for: prende il primo topic con id dato in input tra gli all_topics, altrimenti None.
+    # return next(filter(lambda top: top.topic_id == topic_id, the_topics), None)
 
 
 def all_topics(force_update=False) -> List[Topic]:
@@ -71,8 +87,11 @@ def all_indicators_from_topic(topic: Topic, force_update=False) -> List[Indicato
     db.save_all_indicators(indicator_list)
     return indicator_list
 
+
 def all_observable_of_indicator(indicator_id: str, country: str, force_update=False) -> List[Observable]:
-    return [Observable(indicator_id, country, None, None)] # todo restituire la lista di observable
+    lista: List[Observable] = download_wb.download_observables_of_indicator(indicator_id, country)
+    lista.sort(key=lambda o: o.date, reverse=False)
+    return lista
 
 
 if __name__ == '__main__':

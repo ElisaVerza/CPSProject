@@ -12,6 +12,16 @@ FORMAT_SINGLE_INDICATOR_URL = "http://api.worldbank.org/v2/indicators/{}?format=
 FORMAT_OBSERVABLE_URL = 'https://api.worldbank.org/v2/country/{}/indicator/{}?format=json&page=1&per_page={}'
 
 
+def download_topic(topic_id: int) -> Optional[Topic]:
+    r: requests.Response = requests.get(TOPIC_BASE_URL + '?id={}&format=json'.format(topic_id), allow_redirects=True)
+    print(TOPIC_BASE_URL + '?id={}&format=json'.format(topic_id))
+
+    if int(r.json()[0].get("total")) == 1:
+        json_topic = r.json()[1][0]  # ricavo il Topic Json dal contenuto della response
+        return Topic(int(json_topic.get("id")), json_topic.get("value"), json_topic.get("sourceNote"))
+    return None
+
+
 def download_all_topics() -> List[Topic]:
     """
     Anche se permette di scaricare tutti i Topic WorldBank,
@@ -24,7 +34,7 @@ def download_all_topics() -> List[Topic]:
 
     all_topics: List[Topic] = []
     for json_topic in json_obj:
-        all_topics.append(Topic(json_topic.get("id"),
+        all_topics.append(Topic(int(json_topic.get("id")),
                                 json_topic.get("value"),
                                 json_topic.get("sourceNote")))
     return all_topics
@@ -47,7 +57,7 @@ def download_indicators_for_topic(top: Topic) -> List[Indicator]:
     all_indicators: List[Indicator] = []
 
     for json_indicator in json_indicators:
-        topic: List[int] = [i.get("id") for i in json_indicator.get("topics")]
+        topic: List[int] = [int(i.get("id")) for i in json_indicator.get("topics")]
         all_indicators.append(Indicator(json_indicator.get("id"),
                                         json_indicator.get("name"),
                                         json_indicator.get("sourceNote"),
@@ -65,10 +75,10 @@ def download_indicator(indicator_id: str) -> Optional[Indicator]:
     json_total = r.json()[0].get("total")
     if json_total > 0:
         json_indicator = r.json()[1][0]
-        Indicator(json_indicator.get("id"),
-                  json_indicator.get("name"),
-                  json_indicator.get("sourceNote"),
-                  [i.get("id") for i in json_indicator.get("topics")])
+        return Indicator(json_indicator.get("id"),
+                         json_indicator.get("name"),
+                         json_indicator.get("sourceNote"),
+                         [int(i.get("id")) for i in json_indicator.get("topics")])
     return None
 
 
