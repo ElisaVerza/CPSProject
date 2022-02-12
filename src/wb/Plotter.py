@@ -1,82 +1,52 @@
-from typing import List, Dict, Any, Tuple
+from typing import List, Any, Tuple
 
 import matplotlib.pyplot as plt
 import numpy as np
+from numpy import ndarray
 
 from src.wb.Observable import Observable
 
 
 class Plotter:
 
-    def __init__(self, dict_info: List[Dict]):
-        # TODO: Per ora lascialo per retro compatibilità. Poi elimina e usa la lista di observable
-        self.info = dict_info
-
-    def observable_plot(self):
-        fig, ax = plt.subplots()
-        ind: List[str] = []
-        c: List[str] = []
-        for observable in self.info:
-            ind.append(observable["indicator"])
-            c.append(observable["country"])
-            ax.plot(observable["years"], observable["values"], marker='.', label=observable["country"])
-        self.modify_graph(ax, ind, c)
-        return plt
-
-    def observables_plot_new(self, multiple_observables: List[Tuple[str, str, List[Observable]]]) -> Any:
+    def multi_observables_plot(self, multiple_observables: List[Tuple[str, str, List[Observable]]]) -> Any:
         """
         Grafica un numero qualsiasi di serie di osservabili nello stesso grafico
-
         :param multiple_observables: una lista di tuple con id degli indicator, con rispettiva nazione e osservabili.
         :return: il grafico degli osservabili
         """
+        ax: plt.axes
+        fig: plt.figure
+        plt.figure(figsize=(16, 9))
         fig, ax = plt.subplots()
         observable_tuple: Tuple[str, str, List[Observable]]
-        countries: List[str] = []
-        indicators: List[str] = []
+        line_handles = []
+        indic_countries: List[Tuple[str, str]] = []
         for observable_tuple in multiple_observables:
-            years: List[int] = [obs.date for obs in observable_tuple[2]]
-            years.reverse()  # TODO: perché vengono scaricati in ordine opposto... Attenzione al DB.
-            values: List[float] = [obs.value for obs in observable_tuple[2]]
-            values.reverse()
-            indicators.insert(0, observable_tuple[0])
-            countries.insert(0, observable_tuple[1])
-            ax.plot(years, values, marker='.', label=observable_tuple[1])
+            years: ndarray[int] = np.array([int(obs.date) for obs in observable_tuple[2] if obs.value is not None])
+            values: ndarray[int] = np.array([int(obs.value) for obs in observable_tuple[2] if obs.value is not None])
+            indic_countries.append((observable_tuple[0], observable_tuple[1]))
+            line, = ax.plot(years, values, marker='.')
+            line_handles.append(line)
 
-        self.modify_graph(ax, indicators, countries)
+        self.modify_graph(line_handles, ax, indic_countries, "Multiple Observables")
         return plt
 
-    def media_mobile(self, w: int):
+    def moving_avg(self, obs: List[Observable], w: int):
         """
-        Esegue la media mobile sulle osservabili date
-        :param w: la dimensione della finestra per la media mobile
-        :return: il grafico delle osservabili a cui è stata applicata la media mobile
+        Grafica la media mobile di una serie di osservabili
+        :param obs:
+        :param w:
+        :return:
         """
-        points = []
-        finestra = 0
-        val = self.info[0]["values"]
-        list(map(int, val))
-        for i in range(w):
-            finestra += val[i]
-
-        for i in range(w, len(val)):
-            print(i)
-            points.append(finestra / w)
-            finestra = finestra + val[i] - val[i - w]
-        fig, ax = plt.subplots()
-        ax.plot(self.info[0]["years"][:len(points)], points, marker='o')
-        self.modify_graph(ax, self.info[0]["indicator"], self.info[0]["country"])
-
-        return plt  # TODO: Restituire l'oggetto grafico
-
-    def media_mobile_new(self, obs: List[Observable], w: int):
+        plt.figure(figsize=(16, 9))
         country = obs[0].country
         ind_id = obs[0].indicator_id
 
         points = []
         finestra = 0
-        val: List[int] = [int(o.value) for o in obs]
-        # list(map(int, val))
+
+        val: ndarray[int] = np.array([int(o.value) for o in obs if o.value is not None])
         for i in range(w):
             finestra += val[i]
 
@@ -84,12 +54,11 @@ class Plotter:
             points.append(finestra / w)
             finestra = finestra + val[i] - val[i - w]
         fig, ax = plt.subplots()
-        years = [o.date for o in obs]
-        # years.reverse()
-        ax.plot(years[:len(points)], points, marker='.')
-        self.modify_graph(ax, [ind_id], [country])
+        years: ndarray[int] = np.array([int(o.date) for o in obs if o.value is not None])
+        line, = ax.plot(years[:len(points)], points, marker='.')
+        self.modify_graph([line], ax, [(ind_id, country)], "Moving Average")
 
-        return plt  # TODO: Restituire l'oggetto grafico
+        return plt
 
     def diff_prime(self, obs: List[Observable]):
         # TODO: metodo per calcolare e graficare differenze prime
@@ -105,14 +74,15 @@ class Plotter:
         # TODO: metodo per calcolare e graficare covarianza
         return 0.0
 
-    def retta_reg(self, obs: List[Observable]):
+    def regression_rect(self, obs: List[Observable]):
         """
         Grafica la retta di regressione di una serie di osservabili
         :return: il grafico della retta di regressione
         """
         # Calcolo punti retta regressione
-        x_value = np.array(self.info["years"])
-        y_value = np.array(self.info["values"])
+        plt.figure(figsize=(16, 9))
+        x_value = np.array([o.date for o in obs if o.value is not None])
+        y_value = np.array([int(o.value) for o in obs if o.value is not None])
         x_value = x_value.astype(np.int)
         y_value = y_value.astype(np.int)
         x_mean = x_value.mean()
@@ -124,32 +94,26 @@ class Plotter:
         b0 = y_mean - (b1 * x_mean)
         points = [b0 + round(b1, 3) * i for i in x_value]
         fig, ax = plt.subplots()
-        ax.plot(x_value, points, marker='o')
-        ax.scatter(x_value, y_value, color="orange")
-        self.modify_graph(ax, self.info["indicator"], self.info["country"])
+        regr_line, = ax.plot(x_value, points, marker=None)
+        data_line = ax.scatter(x_value, y_value, color="orange", marker='.')
+        self.modify_graph([regr_line, data_line], ax,
+                          [("Regression Rect", obs[0].country), (obs[0].indicator_id, obs[0].country)],
+                          "Regression Rect")
 
         return plt
 
-    def modify_graph(self, ax: plt.axes, indicator_label: List[str], country_label: List[str]):
-        """
-        Modifica il grafico aggiungendoci le diverse Labels.
-        :param ax: gli assi del grafico
-        :param indicator_label: l'etichetta dell'indicator
-        :param country_label: la label per la country
-        :return:
-        """
+    def modify_graph(self, line_handles: List, ax: plt.axes, indicator_countries_label: List[Tuple[str, str]],
+                     title: str):
         rotation = 70
-        ax.ticklabel_format(style='plain', axis='y')
-        plt.xticks(rotation=rotation)
+        ax.ticklabel_format(style='plain', axis='y')  # nessun tick sull'asse y
+
+        legend_list = []
+        for tup in indicator_countries_label:
+            legend_list.append("{} ({})".format(tup[0], tup[1]))
+
+        ax.legend(handles=line_handles, labels=legend_list, loc='upper right')
         plt.yticks(rotation=rotation)
-        plt.xlabel("Date", labelpad=20)
-        plt.ylabel("Value", labelpad=20)
+        plt.xlabel("Date")
+        plt.ylabel("Value")
         plt.grid(linestyle='--', linewidth=0.5)
-        plt.title("Indicator = {}, Country = {}".format(indicator_label, country_label), loc='left', pad=20)
-
-
-if __name__ == "__main__":
-    x = [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009]
-    y = [3, 765, 123, 87, 234, 23, 234, 677, 987, 19]
-    dit = {}
-    Plotter([dict]).media_mobile(y, 3)
+        plt.title(title, loc='left')
