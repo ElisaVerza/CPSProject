@@ -26,7 +26,7 @@ class Indicator(IWbObject):
         if len(self.topics) != len(o.topics):
             return False
         for i in range(len(self.topics)):
-            if self.topics[i] != int(o.topics[i]):
+            if self.topics[i] != int(o.topics[i]):  # TODO: ordine diverso!!!
                 return False
         return self.indicator_id == str(o.indicator_id) and self.name == o.name and \
                self.sourceNote == o.sourceNote and self.topics == o.topics

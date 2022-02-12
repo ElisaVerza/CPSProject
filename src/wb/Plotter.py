@@ -103,6 +103,7 @@ class Plotter:
                          "Prime Differenze housemade")
 
         return plt
+
     def diff_prime_percentuali_a_mano(self, obs: List[Observable]):
         """
         Calcola e grafica le differenze prime percentuali di una serie di osservabili
@@ -112,19 +113,13 @@ class Plotter:
         years = [o.date for o in obs if o.value is not None]
         diff_list_perc = []
         for i in range(1, len(values)):
-            diff_list_perc.append((values[i] - values[i - 1])/values[i-1])
+            diff_list_perc.append((values[i] - values[i - 1]) / values[i - 1])
 
         fig, ax = plt.subplots()
         line, = ax.plot(np.array(years[1:]), np.array(diff_list_perc))
         self.modify_plot([line], ax, [(obs[0].indicator_id, obs[0].country)],
                          "Prime Differenze housemade")
         return plt
-
-    def covarianza(self, obs: List[Observable]) -> float:
-        media_campionaria = None
-        # covar = 1/n Sum(k=1^n) (x_k, media_campionaria)^2
-        # TODO: metodo per calcolare e graficare covarianza
-        return 0.0
 
     def regression_rect(self, obs: List[Observable]):
         """
@@ -151,13 +146,25 @@ class Plotter:
         self.modify_plot([regr_line, data_line], ax,
                          [("Regression Rect", obs[0].country), (obs[0].indicator_id, obs[0].country)],
                          "Regression Rect")
+        return plt
 
+    def compare_dataset_scatter(self, obs_x: List[Observable], obs_y: List[Observable]):
+        value_x = np.array([o.value for o in obs_x if o.value is not None])
+        value_y = np.array([o.value for o in obs_y if o.value is not None])
+        fig, ax = plt.subplots()
+        data_line = ax.scatter(value_x, value_y, color="orange", marker='.')
+        ax.ticklabel_format(style='plain', axis='x')  # nessun tick sull'asse x
+        plt.xticks(rotation=20)
+        self.modify_plot([data_line], ax,
+                         [(obs_x[0].indicator_id, obs_x[0].country), (obs_y[0].indicator_id, obs_y[0].country)],
+                         "Scatter Compare Plot")
         return plt
 
     def modify_plot(self, line_handles: List, ax: plt.axes, indicator_countries_label: List[Tuple[str, str]],
                     title: str):
         rotation = 70
         ax.ticklabel_format(style='plain', axis='y')  # nessun tick sull'asse y
+
 
         legend_list = []
         for tup in indicator_countries_label:

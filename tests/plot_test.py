@@ -1,6 +1,7 @@
 import unittest
-
-from src.api.plots import *
+import pandas as pd
+from src.api.plots import multi_observables_plot, retta_reg, media_mobile, diff_prime, diff_prime_perc, covarianza, \
+    prova_scatter_plot
 
 
 class PlotTestCase(unittest.TestCase):
@@ -31,6 +32,14 @@ class PlotTestCase(unittest.TestCase):
         plot_differenze_prime_perc = diff_prime_perc(ind='AG.AGR.TRAC.NO', country='usa')
         self.assertIsNotNone(plot_differenze_prime_perc)
         plot_differenze_prime_perc.show()
+
+    def test_covarianza(self):
+        tup = [('SP.RUR.TOTL', 'usa'), ('AG.AGR.TRAC.NO', 'usa')]
+        covid = covarianza(tup[0], tup[1])
+        self.assertNotEqual(covid, 19.0)
+        print("\nCovarianza: ", covid)
+
+        prova_scatter_plot(tup[0], tup[1]).show()
 
 
 if __name__ == '__main__':
