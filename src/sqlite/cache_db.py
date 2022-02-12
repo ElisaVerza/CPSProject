@@ -149,7 +149,6 @@ class CacheDB:
             self.conn.commit()
             cursor.close()
 
-
     def _remove(self, remove_str: str, remove_arg: Dict):
         """
         Esegue una query di remove (puo' eliminare anche piu' di una riga, dipende dalla query).
@@ -249,7 +248,7 @@ class CacheDB:
             indicator_list.append(self.get_indicator(indicator_id_tuple[0]))
         return indicator_list
 
-    def get_observable(self, indicator_id: str, country: str = None) -> List[Observable]:
+    def get_observables_of_indicator(self, indicator_id: str, country: str = None) -> List[Observable]:
         """
         Cerca tutti gli Observables nel database di un indicatore relativo ad un paese
         se country è specificato, altrimenti restituisce tutti gli Observables di un indicatore
@@ -258,18 +257,19 @@ class CacheDB:
         :return: la lista degli Observable trovati
         """
         observables_list: List[Observable] = []
+        observables: List[Tuple[str]]
         if country is not None:
-            observables: List[Tuple[str]] = self._get_all(const.GET_OBSERVABLES_COUNTRY,
-                                                          arg={"obs_ind_id": indicator_id, "country": country})
+            observables = self._get_all(const.GET_OBSERVABLES_COUNTRY,
+                                        arg={"obs_ind_id": indicator_id, "country": country})
         else:
-            observables: List[Tuple[str]] = self._get_all(const.GET_OBSERVABLES,
-                                                          arg={"obs_ind_id": indicator_id})
+            observables = self._get_all(const.GET_OBSERVABLES,
+                                        arg={"obs_ind_id": indicator_id})
 
         for indicator_id_tuple in observables:
-            observables_list.append(Observable(indicator_id_tuple[1],
+            observables_list.append(Observable(indicator_id_tuple[0],
+                                               indicator_id_tuple[1],
                                                indicator_id_tuple[2],
-                                               indicator_id_tuple[3],
-                                               indicator_id_tuple[4]))
+                                               indicator_id_tuple[3]))
         return observables_list
 
     def delete_topic(self, topic_id: int):
@@ -336,7 +336,6 @@ class CacheDB:
 
     def update_observable(self, o: List[Observable]):
         self._update_all(const.UPDATE_OBSERVABLES, o)
-
 
 
 if __name__ == "__main__":

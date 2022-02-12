@@ -86,7 +86,7 @@ class ApiTestCase(unittest.TestCase):
         self.assertTrue(wb_observables[0].date < wb_observables[1].date)
 
         # li prendo dal database
-        db_observables: List[Observable] = db.get_observables_of_indicator(indicators[0].indicator_id)
+        db_observables: List[Observable] = db.get_observables_of_indicator(indicators[0].indicator_id, "usa")
 
         # verifico che i dati siano uguali
         # (chiamano il metodo __eq__, attenzione agli interi: vengono trasformati in stringa)

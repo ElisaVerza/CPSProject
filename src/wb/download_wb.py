@@ -97,7 +97,7 @@ def download_observables_of_indicator(i: str, country: str) -> List[Observable]:
     all_values: List[Observable] = []
     for json_observable in observables:
         all_values.append(Observable(json_observable.get("indicator").get("id"),
-                                     json_observable.get("countryiso3code"),
+                                     str(json_observable.get("countryiso3code")).lower(),
                                      json_observable.get("date"),
                                      json_observable.get("value")))
 

@@ -1,6 +1,8 @@
 import unittest
 
 from src.sqlite.cache_db import *
+from src.api.fetch import *
+from src.api.plots import *
 
 
 class DBTestCase(unittest.TestCase):
@@ -10,6 +12,14 @@ class DBTestCase(unittest.TestCase):
 
     def test_connection(self):  # i nomi dei metodi di test devono iniziare con "test"
         self.assertIsNotNone(self.db.conn)  # controllo che la connessione non sia None
+
+    def test_observables(self):
+        wb_obs = all_observable_of_indicator("AG.AGR.TRAC.NO", "usa")
+        self.assertTrue(len(wb_obs) > 0)
+        db_obs = self.db.get_observables_of_indicator("AG.AGR.TRAC.NO", "usa")
+        self.assertTrue(len(db_obs) > 0)
+        self.assertListEqual(wb_obs, db_obs)
+
 
     def test_topic(self):
         # CREATE: controllo se un topic è stato inserito correttamente
@@ -42,16 +52,6 @@ class DBTestCase(unittest.TestCase):
         self.db.delete_indicator("UNO")
         indicator_none = self.db.get_indicator("UNO")  # READ
         self.assertIsNone(indicator_none)
-
-    def test_observables(self):
-        self.db.save_observable([Observable("UNO", "Indicator Test", 2020, 123.0)])
-        self.db.save_observable([Observable("UNO", "Indicator Test1", 2021, 124.0)])
-        self.db.save_observable([Observable("UNO", "Indicator Test", 2022, 125.0)])
-        self.db.save_observable([Observable("UNO", "Indicator Test1", 2023, 126.0)])
-
-        self.db.update_observable([Observable("UNO", "Indicator Test", 2020, 1298.0)])
-        print(self.db.get_observable("UNO"))
-
 
 
 if __name__ == '__main__':

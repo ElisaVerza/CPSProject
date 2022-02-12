@@ -22,7 +22,7 @@ class Observable(IWbObject):
 
     def __eq__(self, other):
         return self.indicator_id == str(other.indicator_id) and self.country == other.country \
-               and self.date == int(other.date) and self.value == float(other.value)
+               and self.date == int(other.date) and ((self.value == other.value) or (self.value is None and other.value is None))
 
     def to_tuple(self):
         return self.indicator_id, self.country, self.date, self.value

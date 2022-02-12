@@ -15,7 +15,8 @@ CREATE TABLE IF NOT EXISTS indicator_topics (
     FOREIGN KEY (topic_id) REFERENCES topics(topic_id) 
         ON DELETE CASCADE ON UPDATE NO ACTION, 
     PRIMARY KEY(indicator_id, topic_id));
-CREATE TABLE IF NOT EXISTS observables (id INTEGER PRIMARY KEY, obs_ind_id VARCHAR, country VARCHAR, date INTEGER, value FLOAT);
+CREATE TABLE IF NOT EXISTS observables (obs_ind_id VARCHAR, country VARCHAR, date INTEGER, value FLOAT,
+PRIMARY KEY(obs_ind_id, country, date));
 """
 # QUERY PER TOPICS
 # Se i dati sono già presenti, li aggiorna, altrimenti li inserisce
@@ -35,12 +36,11 @@ UPDATE_INDICATOR = "UPDATE indicators SET indicator_name = ?, sourceNote = ? WHE
 REMOVE_INDICATOR = "DELETE FROM indicators WHERE indicator_id = :indicator_id"
 REMOVE_INDICATOR_TOPICS = "DELETE FROM indicator_topics WHERE indicator_id = :indicator_id"
 
-# QUERY PER OBSERVABLES TODO
+# QUERY PER OBSERVABLES
 INSERT_OBSERVABLES = "REPLACE INTO observables(obs_ind_id, country, date, value ) VALUES (?,?,?,?)"
-GET_OBSERVABLES_COUNTRY = "SELECT * FROM observables i WHERE i.obs_ind_id = :obs_ind_id AND i.country= :country"
-GET_OBSERVABLES = "SELECT * FROM observables i WHERE i.obs_ind_id = :obs_ind_id"
+GET_OBSERVABLES_COUNTRY = "SELECT * FROM observables WHERE obs_ind_id = :obs_ind_id AND country= :country"
+GET_OBSERVABLES = "SELECT * FROM observables WHERE obs_ind_id = :obs_ind_id"
 REMOVE_OBSERVABLES_COUNTRY = "DELETE FROM observables WHERE obs_ind_id = :obs_ind_id AND country= :country"
 REMOVE_OBSERVABLES = "DELETE FROM observables WHERE obs_ind_id = :obs_ind_id"
 UPDATE_OBSERVABLES = "UPDATE observables SET obs_ind_id = ?, country = ?, date = ?, value = ? " \
-                             "WHERE obs_ind_id= ? AND country= ? AND date=?"
-
+                     "WHERE obs_ind_id= ? AND country= ? AND date=?"

@@ -88,10 +88,18 @@ def all_indicators_from_topic(topic: Topic, force_update=False) -> List[Indicato
     return indicator_list
 
 
-def all_observable_of_indicator(indicator_id: str, country: str, force_update=False) -> List[Observable]:
-    lista: List[Observable] = download_wb.download_observables_of_indicator(indicator_id, country)
-    lista.sort(key=lambda o: o.date, reverse=False)
-    return lista
+def all_observable_of_indicator(indicator_id: str, country: str = None, force_update=False) -> List[Observable]:
+    db = CacheDB()  # mi connetto al database
+    if not force_update:
+        # ricerca nel db degli osservabili
+        observable_list = db.get_observables_of_indicator(indicator_id, country)
+
+        if len(observable_list) > 0:
+            return observable_list
+    observable_list: List[Observable] = download_wb.download_observables_of_indicator(indicator_id, country)
+    observable_list.sort(key=lambda o: o.date, reverse=False)
+    db.save_observable(observable_list)
+    return observable_list
 
 
 if __name__ == '__main__':
