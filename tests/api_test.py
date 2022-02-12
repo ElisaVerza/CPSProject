@@ -1,3 +1,4 @@
+import logging
 import unittest
 from typing import List
 
@@ -8,85 +9,80 @@ from src.wb.Observable import Observable
 
 
 class ApiTestCase(unittest.TestCase):
-    def test_topic(self):
-        db = cache_db.CacheDB()
-        db.delete_topic(1)
+    """
+    Attenzione: Tutti i test di questa classe richiedono connessione a internet!
+    """
 
+    def setUp(self) -> None:
+        logging.basicConfig(level=logging.DEBUG)
+        self.db = cache_db.CacheDB()
+
+    def test_topic(self):
+        # elimino e rimetto un topic
+        self.db.delete_topic(1)
         wb_topic = fetch.one_topic(1)
-        db_topic = db.get_topic(1)
+        db_topic = self.db.get_topic(1)
         self.assertIsNotNone(wb_topic)
         self.assertEqual(wb_topic, db_topic, "I due topic non coincidono")
 
     def test_all_topics(self):
-        # prima elimino tutti i topic dal database
-        db = cache_db.CacheDB()
-        db.delete_all_topics()
-
-        # li scarico
-        downloaded_topics = fetch.all_topics()
+        # scarico e aggiorno i topics nel db
+        downloaded_topics = fetch.all_topics(force_update=True)
 
         # controllo che siano stati scaricati dati
-        self.assertTrue(len(downloaded_topics) > 0)
+        self.assertTrue(len(downloaded_topics) > 0, "Impossibile scaricare i topics. Controlla la connessione internet")
 
         # li prendo dal database
-        topics_from_db = db.get_all_topics()
+        topics_from_db = self.db.get_all_topics()
 
         # verifico che i dati siano uguali
         # (chiamano il metodo __eq__, attenzione agli interi: vengono trasformati in stringa)
         self.assertListEqual(topics_from_db, downloaded_topics, "Le due liste non corrispondono")
 
     def test_indicator(self):
-        db = cache_db.CacheDB()
         ind_id = 'AG.AGR.TRAC.NO'
-        db.delete_indicator(ind_id)  # LENTO
 
-        # li scarico
+        # scarico o prendo dal DB un indicator
         wb_indicator = fetch.one_indicator(ind_id)
-        print(wb_indicator, wb_indicator.topics)
+
         # controllo che siano stati scaricati dati
-        self.assertIsNotNone(wb_indicator)
+        self.assertIsNotNone(wb_indicator, "Impossibile scaricare l'indicatore. Controlla la connessione internet")
 
         # li prendo dal database
-        db_indicator: Indicator = db.get_indicator(ind_id)
+        db_indicator: Indicator = self.db.get_indicator(ind_id)
 
         # verifico che i dati siano uguali
         # (chiamano il metodo __eq__, attenzione agli interi: vengono trasformati in stringa)
         self.assertEqual(db_indicator, wb_indicator, "I due Indicator non corrispondono")
 
     def test_indicator_from_topic(self):
-        db = cache_db.CacheDB()
-        # db.delete_all_indicators() # LENTO
-
-        # li scarico
+        # Prendo da WB un topic e tutti gli indicator che riguardano quel topic
         topic = fetch.one_topic(1)  # 3 Economy and Growth
-        wb_indicators = fetch.all_indicators_from_topic(topic)
+        wb_indicators = fetch.all_indicators_from_topic(topic, force_update=True)
 
         # controllo che siano stati scaricati dati
-        self.assertTrue(len(wb_indicators) > 0)
+        self.assertTrue(len(wb_indicators) > 0, "Impossibile scaricare l'indicatore. Controlla la connessione internet")
 
         # li prendo dal database
-        db_indicators: List[Indicator] = db.get_indicators_from_topic(topic.topic_id)
+        db_indicators: List[Indicator] = self.db.get_indicators_from_topic(topic.topic_id)
 
         # verifico che i dati siano uguali
         # (chiamano il metodo __eq__, attenzione agli interi: vengono trasformati in stringa)
         self.assertListEqual(db_indicators, wb_indicators, "Le due liste non corrispondono")
 
     def test_observable(self):
-        db = cache_db.CacheDB()
-        # db.delete_all_observables()  # LENTO
-
+        # Prendo da WB un topic e tutti gli indicator che riguardano quel topic
         topic = fetch.one_topic(1)  # Agriculture
-        indicators = fetch.all_indicators_from_topic(topic)
-        # li scarico
+        indicators = fetch.all_indicators_from_topic(topic, force_update=True)
+        # scarico gli osservabili di un indicatore
         wb_observables = fetch.all_observable_of_indicator(indicators[0].indicator_id, 'usa')
-        print(indicators[0])
 
         # controllo che siano stati scaricati dati
-        self.assertTrue(len(wb_observables) > 1)
+        self.assertTrue(len(wb_observables) > 1, "Impossibile scaricare almeno 2 osservabili. Controlla internet")
         self.assertTrue(wb_observables[0].date < wb_observables[1].date)
 
         # li prendo dal database
-        db_observables: List[Observable] = db.get_observables_of_indicator(indicators[0].indicator_id, "usa")
+        db_observables: List[Observable] = self.db.get_observables_of_indicator(indicators[0].indicator_id, "usa")
 
         # verifico che i dati siano uguali
         # (chiamano il metodo __eq__, attenzione agli interi: vengono trasformati in stringa)

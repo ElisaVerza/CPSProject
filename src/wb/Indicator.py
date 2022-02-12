@@ -23,13 +23,15 @@ class Indicator(IWbObject):
                f"source_note={self.sourceNote[:10]}... topic={self.topics})"
 
     def __eq__(self, o) -> bool:
+        # verifico la lunghezza degli array di topics
         if len(self.topics) != len(o.topics):
             return False
+        # verifico che i topic siano gli stessi in entrambi gli indicator
         for i in range(len(self.topics)):
-            if self.topics[i] != int(o.topics[i]):  # TODO: ordine diverso!!!
+            if o.topics[i] not in self.topics:
                 return False
-        return self.indicator_id == str(o.indicator_id) and self.name == o.name and \
-               self.sourceNote == o.sourceNote and self.topics == o.topics
+        # verifico i rimanenti attributi dell' Indicator
+        return self.indicator_id == str(o.indicator_id) and self.name == o.name and self.sourceNote == o.sourceNote
 
     def to_tuple(self) -> Tuple:
         return self.indicator_id, self.name, self.sourceNote

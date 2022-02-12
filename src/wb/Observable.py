@@ -1,3 +1,5 @@
+from typing import Optional
+
 from .interface import IWbObject
 
 
@@ -6,7 +8,7 @@ class Observable(IWbObject):
     Classe che racchiude tutte le informazioni ed il valore di un Osservabile
     """
 
-    def __init__(self, indicator_id: str, country_code: str, date: int, value: float):
+    def __init__(self, indicator_id: str, country_code: str, date: int, value: Optional[float]):
         self.indicator_id = indicator_id
         self.country = country_code
         self.date = date

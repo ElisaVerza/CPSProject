@@ -1,13 +1,13 @@
+import logging
 import unittest
 
-from src.sqlite.cache_db import *
 from src.api.fetch import *
-from src.api.plots import *
+from src.sqlite.cache_db import *
 
 
 class DBTestCase(unittest.TestCase):
     def setUp(self) -> None:
-        logging.basicConfig(level=logging.DEBUG)
+        logging.basicConfig(level=logging.WARNING)
         self.db = CacheDB()
 
     def test_connection(self):  # i nomi dei metodi di test devono iniziare con "test"
@@ -19,7 +19,6 @@ class DBTestCase(unittest.TestCase):
         db_obs = self.db.get_observables_of_indicator("AG.AGR.TRAC.NO", "usa")
         self.assertTrue(len(db_obs) > 0)
         self.assertListEqual(wb_obs, db_obs)
-
 
     def test_topic(self):
         # CREATE: controllo se un topic è stato inserito correttamente
