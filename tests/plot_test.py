@@ -22,6 +22,16 @@ class PlotTestCase(unittest.TestCase):
         self.assertIsNotNone(plot_media_mobile)
         plot_media_mobile.show()
 
+    def test_differenze_prime(self):
+        plot_differenze_prime = diff_prime(ind='AG.AGR.TRAC.NO', country='usa')
+        self.assertIsNotNone(plot_differenze_prime)
+        plot_differenze_prime.show()
+
+    def test_differenze_prime_percentuali(self):
+        plot_differenze_prime_perc = diff_prime_perc(ind='AG.AGR.TRAC.NO', country='usa')
+        self.assertIsNotNone(plot_differenze_prime_perc)
+        plot_differenze_prime_perc.show()
+
 
 if __name__ == '__main__':
     unittest.main()
