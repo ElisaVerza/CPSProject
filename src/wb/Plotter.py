@@ -3,6 +3,7 @@ from typing import List, Any, Tuple
 import matplotlib.pyplot as plt
 import numpy as np
 from numpy import ndarray
+import pandas as pd
 
 from src.wb.Observable import Observable
 
@@ -29,15 +30,15 @@ class Plotter:
             line, = ax.plot(years, values, marker='.')
             line_handles.append(line)
 
-        self.modify_graph(line_handles, ax, indic_countries, "Multiple Observables")
+        self.modify_plot(line_handles, ax, indic_countries, "Multiple Observables")
         return plt
 
     def moving_avg(self, obs: List[Observable], w: int):
         """
         Grafica la media mobile di una serie di osservabili
-        :param obs:
-        :param w:
-        :return:
+        :param obs: la lista di osservabili di cui calcolare la media mobile
+        :param w: la dimensione della finestra per la media mobile
+        :return: il grafico della media mobile
         """
         plt.figure(figsize=(16, 9))
         country = obs[0].country
@@ -56,17 +57,68 @@ class Plotter:
         fig, ax = plt.subplots()
         years: ndarray[int] = np.array([int(o.date) for o in obs if o.value is not None])
         line, = ax.plot(years[:len(points)], points, marker='.')
-        self.modify_graph([line], ax, [(ind_id, country)], "Moving Average")
+        self.modify_plot([line], ax, [(ind_id, country)], "Moving Average")
 
         return plt
 
-    def diff_prime(self, obs: List[Observable]):
-        # TODO: metodo per calcolare e graficare differenze prime
-        return
+    def diff_prime(self, obs: List[Observable], percentage=False):
+        """
+        Calcola e grafica le differenze prime (anche percentuali) di una serie di osservabili.
+        :param obs: la lista di osservabili di cui calcolare la media mobile
+        :param percentage: se True, calcola le differenze prime percentuali, altrimenti le differenze prime semplici
+        :return: il grafico delle differenze prime [percentuali]
+        """
+        # uso la dict-comprehension per ricavare un dizionario dalla lista di observable
+        series = pd.Series(data={int(o.date): int(o.value) for o in obs if o.value is not None},
+                           index=[int(o.date) for o in obs if o.value is not None])
+        diff: pd.Series
+        title: str
 
-    def diff_prime_p(self, obs: List[Observable]):
-        # TODO: metodo per calcolare e graficare differenze prime percentuali
-        return
+        if not percentage:
+            diff = series.diff()
+            title = "Prime Difference"
+        else:
+            diff = series.pct_change()
+            title = "Prime Percentage Difference"
+
+        fig, ax = plt.subplots()
+        line, = ax.plot(diff)
+        self.modify_plot([line], ax, [(obs[0].indicator_id, obs[0].country)], title)
+        return plt
+
+    def diff_prime_a_mano(self, obs: List[Observable]):
+        """
+        Calcola A MANO e grafica le differenze prime di una serie di osservabili
+        """
+        values = [o.value for o in obs if o.value is not None]
+        years = [o.date for o in obs if o.value is not None]
+
+        diff_list = []
+        for i in range(1, len(values)):
+            diff_list.append(values[i] - values[i - 1])
+
+        fig, ax = plt.subplots()
+        line, = ax.plot(np.array(years[1:]), np.array(diff_list))
+        self.modify_plot([line], ax, [(obs[0].indicator_id, obs[0].country)],
+                         "Prime Differenze housemade")
+
+        return plt
+    def diff_prime_percentuali_a_mano(self, obs: List[Observable]):
+        """
+        Calcola e grafica le differenze prime percentuali di una serie di osservabili
+        """
+        # uso la dict-comprehension per ricavare un dizionario dalla lista di observable
+        values = [o.value for o in obs if o.value is not None]
+        years = [o.date for o in obs if o.value is not None]
+        diff_list_perc = []
+        for i in range(1, len(values)):
+            diff_list_perc.append((values[i] - values[i - 1])/values[i-1])
+
+        fig, ax = plt.subplots()
+        line, = ax.plot(np.array(years[1:]), np.array(diff_list_perc))
+        self.modify_plot([line], ax, [(obs[0].indicator_id, obs[0].country)],
+                         "Prime Differenze housemade")
+        return plt
 
     def covarianza(self, obs: List[Observable]) -> float:
         media_campionaria = None
@@ -96,14 +148,14 @@ class Plotter:
         fig, ax = plt.subplots()
         regr_line, = ax.plot(x_value, points, marker=None)
         data_line = ax.scatter(x_value, y_value, color="orange", marker='.')
-        self.modify_graph([regr_line, data_line], ax,
-                          [("Regression Rect", obs[0].country), (obs[0].indicator_id, obs[0].country)],
-                          "Regression Rect")
+        self.modify_plot([regr_line, data_line], ax,
+                         [("Regression Rect", obs[0].country), (obs[0].indicator_id, obs[0].country)],
+                         "Regression Rect")
 
         return plt
 
-    def modify_graph(self, line_handles: List, ax: plt.axes, indicator_countries_label: List[Tuple[str, str]],
-                     title: str):
+    def modify_plot(self, line_handles: List, ax: plt.axes, indicator_countries_label: List[Tuple[str, str]],
+                    title: str):
         rotation = 70
         ax.ticklabel_format(style='plain', axis='y')  # nessun tick sull'asse y
 
