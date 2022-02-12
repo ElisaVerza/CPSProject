@@ -43,6 +43,16 @@ class DBTestCase(unittest.TestCase):
         indicator_none = self.db.get_indicator("UNO")  # READ
         self.assertIsNone(indicator_none)
 
+    def test_observables(self):
+        self.db.save_observable([Observable("UNO", "Indicator Test", 2020, 123.0)])
+        self.db.save_observable([Observable("UNO", "Indicator Test1", 2021, 124.0)])
+        self.db.save_observable([Observable("UNO", "Indicator Test", 2022, 125.0)])
+        self.db.save_observable([Observable("UNO", "Indicator Test1", 2023, 126.0)])
+
+        self.db.update_observable([Observable("UNO", "Indicator Test", 2020, 1298.0)])
+        print(self.db.get_observable("UNO"))
+
+
 
 if __name__ == '__main__':
     unittest.main()

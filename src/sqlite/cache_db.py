@@ -136,6 +136,20 @@ class CacheDB:
             self.conn.commit()
             cursor.close()
 
+    def _update_all(self, update_str: str, all_object: List):
+        cursor = self.conn.cursor()
+        try:
+            for o in all_object:
+                o = o.to_tuple()
+                o = o + o[:3]
+                cursor.execute(update_str, o)
+        except sqlite3.Error as error:
+            logging.error("Impossibile aggiornare: ", update_str + str(all_object), error)
+        finally:
+            self.conn.commit()
+            cursor.close()
+
+
     def _remove(self, remove_str: str, remove_arg: Dict):
         """
         Esegue una query di remove (puo' eliminare anche piu' di una riga, dipende dalla query).
@@ -179,8 +193,12 @@ class CacheDB:
             for row in indicator_topics:
                 self._save_one(const.INSERT_INDICATOR_TOPICS, row)
 
-    def save_observable(self, o: Observable):
-        pass
+    def save_observable(self, o: List[Observable]):
+        """
+        Salva gli observable della lista nel database
+        :param o: lista di osservabili da salvare
+        """
+        self._save_all(const.INSERT_OBSERVABLES, o)
 
     def get_topic(self, topic_id: int) -> Optional[Topic]:  # Optional[] serve a ricordare che il Topic può essere None
         """
@@ -231,8 +249,28 @@ class CacheDB:
             indicator_list.append(self.get_indicator(indicator_id_tuple[0]))
         return indicator_list
 
-    def get_observables_of_indicator(self, indicator_id: str) -> List[Observable]:
-        return []
+    def get_observable(self, indicator_id: str, country: str = None) -> List[Observable]:
+        """
+        Cerca tutti gli Observables nel database di un indicatore relativo ad un paese
+        se country è specificato, altrimenti restituisce tutti gli Observables di un indicatore
+        :param indicator_id: id dell'indicatore
+        :param country: paese di interesse
+        :return: la lista degli Observable trovati
+        """
+        observables_list: List[Observable] = []
+        if country is not None:
+            observables: List[Tuple[str]] = self._get_all(const.GET_OBSERVABLES_COUNTRY,
+                                                          arg={"obs_ind_id": indicator_id, "country": country})
+        else:
+            observables: List[Tuple[str]] = self._get_all(const.GET_OBSERVABLES,
+                                                          arg={"obs_ind_id": indicator_id})
+
+        for indicator_id_tuple in observables:
+            observables_list.append(Observable(indicator_id_tuple[1],
+                                               indicator_id_tuple[2],
+                                               indicator_id_tuple[3],
+                                               indicator_id_tuple[4]))
+        return observables_list
 
     def delete_topic(self, topic_id: int):
         """
@@ -262,8 +300,17 @@ class CacheDB:
         self._truncate("indicator_topics")
         self._truncate("indicators")
 
-    def delete_observable(self, obs_id: int):
-        pass
+    def delete_observable(self, obs_ind_id: str, country: str = None):
+        """
+        Elimina tutti gli Observables di un indicatore e se specificato il paramentro country
+        elimina tutti gli Observables di un indicatore di un determinato paese
+        :param obs_ind_id: id dell'indicatore
+        :param country: paese di interesse
+        """
+        if country is not None:
+            self._remove(const.REMOVE_OBSERVABLES_COUNTRY, {"obs_ind_id": obs_ind_id, "country": country})
+        else:
+            self._remove(const.REMOVE_OBSERVABLES, {"indicator_id": obs_ind_id})
 
     def delete_all_observables(self):
         """
@@ -287,8 +334,9 @@ class CacheDB:
         self._remove(const.REMOVE_INDICATOR_TOPICS, {"indicator_id": i.indicator_id})
         self._save_all(const.INSERT_INDICATOR_TOPICS, i.indicator_topic_list())
 
-    def update_observable(self, o: Observable):
-        pass
+    def update_observable(self, o: List[Observable]):
+        self._update_all(const.UPDATE_OBSERVABLES, o)
+
 
 
 if __name__ == "__main__":
