@@ -1,8 +1,8 @@
 from typing import List, Any, Tuple
 
-from src.api import fetch
-from src.wb.Observable import Observable
-from src.wb import plotter
+from opandas_wb.api import fetch
+from opandas_wb.wb.Observable import Observable
+from opandas_wb.wb import plotter
 import pandas as pd
 
 
@@ -102,6 +102,5 @@ def cmp_scatter_plot(ind_country_x: Tuple[str, str], ind_country_y: Tuple[str, s
         # se l'anno di y è inclusa negli anni di x, aggiungo l' observable alla lista y
         if observables_y[i].value is not None and observables_y[i].date in [o.date for o in observables_x]:
             list_y.append(observables_y[i])
-
 
     return plotter.compare_dataset_scatter(list_x, list_y)
