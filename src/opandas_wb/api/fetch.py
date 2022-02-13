@@ -1,10 +1,10 @@
 from typing import List, Optional
 
-from src.sqlite.cache_db import CacheDB
-from src.wb.Indicator import Indicator
-from src.wb.Observable import Observable
-from src.wb.Topic import Topic
-from src.wb import download_wb
+from src.opandas_wb.sqlite.cache_db import CacheDB
+from src.opandas_wb.wb.Indicator import Indicator
+from src.opandas_wb.wb.Observable import Observable
+from src.opandas_wb.wb.Topic import Topic
+from src.opandas_wb.wb import download_wb
 
 
 def one_topic(topic_id: int, force_update=False) -> Optional[Topic]:

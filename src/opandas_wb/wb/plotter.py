@@ -5,7 +5,7 @@ import numpy as np
 from numpy import ndarray
 import pandas as pd
 
-from src.wb.Observable import Observable
+from src.opandas_wb.wb.Observable import Observable
 
 
 def multi_observables_plot(multiple_observables: List[Tuple[str, str, List[Observable]]]) -> Any:

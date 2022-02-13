@@ -1,15 +1,15 @@
 import sqlite3
 import logging
-import src.sqlite.constants as const
+import src.opandas_wb.sqlite.constants as const
 from sqlite3 import Connection
 from typing import Optional, List, Dict, Tuple
 
-from src.wb.Indicator import Indicator
-from src.wb.Observable import Observable
-from src.wb.Topic import Topic
+from src.opandas_wb.wb.Indicator import Indicator
+from src.opandas_wb.wb.Observable import Observable
+from src.opandas_wb.wb.Topic import Topic
 
 # I metodi che iniziano per '_' non dovrebbero essere chiamati dagli utenti che usano il package
-from src.wb.interface import IWbObject
+from src.opandas_wb.wb.interface import IWbObject
 
 
 class CacheDB:

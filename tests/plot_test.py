@@ -1,6 +1,6 @@
 import unittest
 
-from src.api.plots import *
+from src.opandas_wb.api.plots import *
 
 
 class PlotTestCase(unittest.TestCase):

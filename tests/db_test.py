@@ -1,8 +1,7 @@
-import logging
 import unittest
 
-from src.api.fetch import *
-from src.sqlite.cache_db import *
+from src.opandas_wb.api.fetch import *
+from src.opandas_wb.sqlite.cache_db import *
 
 
 class DBTestCase(unittest.TestCase):

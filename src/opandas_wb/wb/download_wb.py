@@ -2,9 +2,9 @@ import logging
 from typing import List, Optional
 
 import requests
-from src.wb.Indicator import Indicator
-from src.wb.Observable import Observable
-from src.wb.Topic import Topic
+from src.opandas_wb.wb.Indicator import Indicator
+from src.opandas_wb.wb.Observable import Observable
+from src.opandas_wb.wb.Topic import Topic
 
 TOPIC_BASE_URL = 'https://api.worldbank.org/v2/topic'
 FORMAT_INDICATOR_URL = TOPIC_BASE_URL + '/{}/indicator?format=json&per_page={}'
