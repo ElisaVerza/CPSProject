@@ -6,7 +6,7 @@ from src.opandas_wb.wb import plotter
 import pandas as pd
 
 
-def multi_observables_plot(indicator_country: List[Tuple[str, str]]) -> Any:
+def multi_indicator_plot(indicator_country: List[Tuple[str, str]]) -> Any:
     """
     Crea un grafico con gli observables degli indicatori dati e delle nazioni/della nazione dati in input.
     :param indicator_country: Lista di tuple in cui il primo elemento è un id indicator
@@ -102,5 +102,6 @@ def cmp_scatter_plot(ind_country_x: Tuple[str, str], ind_country_y: Tuple[str, s
         # se l'anno di y è inclusa negli anni di x, aggiungo l' observable alla lista y
         if observables_y[i].value is not None and observables_y[i].date in [o.date for o in observables_x]:
             list_y.append(observables_y[i])
+
 
     return plotter.compare_dataset_scatter(list_x, list_y)

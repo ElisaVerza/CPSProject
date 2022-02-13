@@ -164,9 +164,16 @@ def compare_dataset_scatter(obs_x: List[Observable], obs_y: List[Observable]):
     data_line = ax.scatter(value_x, value_y, color="orange", marker='.')
     ax.ticklabel_format(style='plain', axis='x')  # nessun tick sull'asse x
     plt.xticks(rotation=20)
-    modify_plot([data_line], ax,
-                [(obs_x[0].indicator_id, obs_x[0].country), (obs_y[0].indicator_id, obs_y[0].country)],
-                "Scatter Compare Plot")
+
+    ax.ticklabel_format(style='plain', axis='y')  # nessun tick sull'asse y e rimuove la notazione scientifica
+    # modifico la rotazione sull' asse y
+    plt.yticks(rotation=70)
+    # Etichette e stili
+    plt.grid(linestyle='--', linewidth=0.5)
+    plt.title("Scatter Compare Plot", loc='left')
+    plt.xlabel(obs_x[0].indicator_id)
+    plt.ylabel(obs_y[0].indicator_id)
+
     return plt
 
 
