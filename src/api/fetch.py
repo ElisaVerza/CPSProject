@@ -60,7 +60,7 @@ def one_indicator(indicator_id: str, force_update=False) -> Optional[Indicator]:
     da WorldBank e poi lo salva nel database, altrimenti lo prende direttamente dal database
     :param indicator_id: stringa id dell' indicatore
     :param force_update: se True, scarica sempre da WorldBank e poi aggiorna il database
-    :return: l' indicator richiesto, se la query/download è andata a buon fine
+    :return: l'indicator richiesto, se la query/download è andata a buon fine
     """
     db = CacheDB()
 

@@ -7,9 +7,9 @@ class PlotTestCase(unittest.TestCase):
 
     def test_three_obs(self):
         # provo a graficare lo stesso indicatore di 3 nazioni diverse
-        plot = multi_observables_plot([('AG.AGR.TRAC.NO', 'usa'),
-                                       ('AG.AGR.TRAC.NO', 'esp'),
-                                       ('AG.AGR.TRAC.NO', 'ita')])
+        plot = multi_indicator_plot([('AG.AGR.TRAC.NO', 'usa'),
+                                     ('AG.AGR.TRAC.NO', 'esp'),
+                                     ('AG.AGR.TRAC.NO', 'ita')])
         self.assertIsNotNone(plot)
         plot.show()
 
