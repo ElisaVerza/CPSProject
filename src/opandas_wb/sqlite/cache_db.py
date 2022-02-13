@@ -1,17 +1,16 @@
 import sqlite3
 import logging
-import src.opandas_wb.sqlite.constants as const
+import opandas_wb.sqlite.constants as const
+
 from sqlite3 import Connection
 from typing import Optional, List, Dict, Tuple
+from opandas_wb.wb.Indicator import Indicator
+from opandas_wb.wb.Observable import Observable
+from opandas_wb.wb.Topic import Topic
+from opandas_wb.wb.interface import IWbObject
 
-from src.opandas_wb.wb.Indicator import Indicator
-from src.opandas_wb.wb.Observable import Observable
-from src.opandas_wb.wb.Topic import Topic
 
 # I metodi che iniziano per '_' non dovrebbero essere chiamati dagli utenti che usano il package
-from src.opandas_wb.wb.interface import IWbObject
-
-
 class CacheDB:
     """
     Questa classe permette di gestire il database cache per i dati scaricati da WorldBank (Observable, Indicator, Topic)
