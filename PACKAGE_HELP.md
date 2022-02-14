@@ -22,4 +22,5 @@
    - Da TestPyPI: `python3 -m pip install --index-url https://test.pypi.org/simple/ --no-deps opandasWorldBank`
    - Da PyPI: `python3 -m pip install opandasWorldBank`
 # Disinstallazione del package
-- Da TestPyPI: python3 -m pip uninstall opandasWorldBank
+
+      python3 -m pip uninstall opandasWorldBank
