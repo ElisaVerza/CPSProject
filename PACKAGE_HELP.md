@@ -8,8 +8,8 @@
    - Su PyPI (production): `python3 -m twine upload dist/*`
 6. Inserire username: "\_\_token\_\_" e come password il valore del token creato sul sito [Test]PyPI
 7. Scaricare il package: 
-   - Da TestPyPI: `python3 -m pip install --index-url https://test.pypi.org/simple/ --no-deps opandas_wb`
-   - Da PyPI: `python3 -m pip install opandas_wb`
+   - Da TestPyPI: `python3 -m pip install --index-url https://test.pypi.org/simple/ --no-deps opandasWorldBank`
+   - Da PyPI: `python3 -m pip install opandasWorldBank`
 # Aggiornamento del package
 1. Eliminare la cartella dist
 2. Incrementare il campo version in setup.cfg
@@ -19,7 +19,7 @@
    - Su PyPI: `python3 -m twine upload dist/*`
 5. Inserire username: "\_\_token\_\_" e il valore del token come password
 6. Aggiornare localmente il package:
-   - Da TestPyPI: `python3 -m pip install --index-url https://test.pypi.org/simple/ --no-deps opandas_wb`
-   - Da PyPI: `python3 -m pip install opandas_wb`
+   - Da TestPyPI: `python3 -m pip install --index-url https://test.pypi.org/simple/ --no-deps opandasWorldBank`
+   - Da PyPI: `python3 -m pip install opandasWorldBank`
 # Disinstallazione del package
-- Da TestPyPI: python3 -m pip uninstall opandas_wb
+- Da TestPyPI: python3 -m pip uninstall opandasWorldBank

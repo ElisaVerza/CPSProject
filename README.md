@@ -3,7 +3,7 @@
 __________
 Home del Package su TestPyPI: 
 
-[https://test.pypi.org/project/opandas-wb/](https://test.pypi.org/project/opandas-wb/)
+[https://test.pypi.org/project/opandasWorldBank/](https://test.pypi.org/project/opandasWorldBank/)
 ___________
 ## Manuale d'installazione
 1. Installare i package `requests`, `matplotlib` e `pandas`

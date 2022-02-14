@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 
 from numpy import ndarray
-from src.opandas_wb.wb.Observable import Observable
+from .Observable import Observable
 from typing import List, Any, Tuple
 
 
