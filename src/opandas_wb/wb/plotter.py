@@ -13,10 +13,7 @@ def multi_observables_plot(multiple_observables: List[Tuple[str, str, List[Obser
     :param multiple_observables: una lista di tuple con id degli indicator, con rispettiva nazione e osservabili.
     :return: il grafico degli osservabili
     """
-    # ax: plt.axes
-    # fig: plt.figure
-    # plt.figure(figsize=(16, 9))
-    # fig, ax = plt.subplots()
+
     observable_tuple: Tuple[str, str, List[Observable]]
     line_handles = []
     indic_countries: List[Tuple[str, str]] = []
@@ -40,7 +37,7 @@ def moving_avg(obs: List[Observable], w: int):
     :param w: la dimensione della finestra per la media mobile
     :return: il grafico della media mobile
     """
-    # plt.figure(figsize=(16, 9))
+
     country = obs[0].country
     ind_id = obs[0].indicator_id
     points = []
@@ -54,7 +51,7 @@ def moving_avg(obs: List[Observable], w: int):
     for i in range(w, len(val)):
         points.append(finestra / w)
         finestra = finestra + val[i] - val[i - w]
-    # fig, ax = plt.subplots()
+
     years: ndarray = np.array([int(o.date) for o in obs if o.value is not None])
     line, = plt.plot(years[:len(points)], points, marker='.')
     modify_plot([line], [(ind_id, country)], "Moving Average")
@@ -82,7 +79,6 @@ def diff_prime(obs: List[Observable], percentage=False):
         diff = series.pct_change()
         title = "Prime Percentage Difference"
 
-    # fig, ax = plt.subplots()
     line, = plt.plot(diff)
     modify_plot([line], [(obs[0].indicator_id, obs[0].country)], title)
     return plt
@@ -99,7 +95,6 @@ def diff_prime_a_mano(obs: List[Observable]):
     for i in range(1, len(values)):
         diff_list.append(values[i] - values[i - 1])
 
-    # fig, ax = plt.subplots()
     line, = plt.plot(np.array(years[1:]), np.array(diff_list))
     modify_plot([line], [(obs[0].indicator_id, obs[0].country)], "Prime Differenze housemade")
 
@@ -116,7 +111,6 @@ def diff_prime_percentuali_a_mano(obs: List[Observable]):
     for i in range(1, len(values)):
         diff_list_perc.append((values[i] - values[i - 1]) / values[i - 1])
 
-    # fig, ax = plt.subplots()
     line, = plt.plot(np.array(years[1:]), np.array(diff_list_perc))
     modify_plot([line], [(obs[0].indicator_id, obs[0].country)], "Prime Percentage Difference housemade")
     return plt
@@ -157,8 +151,8 @@ def compare_dataset_scatter(obs_x: List[Observable], obs_y: List[Observable]):
     """
     value_x = np.array([o.value for o in obs_x if o.value is not None])
     value_y = np.array([o.value for o in obs_y if o.value is not None])
-    # fig, ax = plt.subplots()
-    data_line = plt.scatter(value_x, value_y, color="orange", marker='.')
+
+    plt.scatter(value_x, value_y, color="orange", marker='.')
     plt.ticklabel_format(style='plain', axis='x')  # nessun tick sull'asse x
     plt.xticks(rotation=20)
 
