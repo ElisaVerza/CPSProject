@@ -1,2 +1,2 @@
-# Definisco quali moduli importare quando si scrive "from wb import *". In questo caso importa solo il modulo main.py
+"""Questo package contiene le funzioni per gestire il database cache """
 __all__ = ['cache_db', 'constants']

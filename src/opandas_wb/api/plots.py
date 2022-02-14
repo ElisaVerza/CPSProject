@@ -1,8 +1,8 @@
 from typing import List, Any, Tuple
 
-from opandas_wb.api import fetch
-from opandas_wb.wb.Observable import Observable
-from opandas_wb.wb import plotter
+from src.opandas_wb.api import fetch
+from src.opandas_wb.wb.Observable import Observable
+from src.opandas_wb.wb import plotter
 import pandas as pd
 
 

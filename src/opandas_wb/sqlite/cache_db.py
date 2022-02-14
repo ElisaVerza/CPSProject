@@ -1,13 +1,13 @@
 import sqlite3
 import logging
-import opandas_wb.sqlite.constants as const
 
 from sqlite3 import Connection
 from typing import Optional, List, Dict, Tuple
-from opandas_wb.wb.Indicator import Indicator
-from opandas_wb.wb.Observable import Observable
-from opandas_wb.wb.Topic import Topic
-from opandas_wb.wb.interface import IWbObject
+from src.opandas_wb.sqlite import constants as const
+from src.opandas_wb.wb.Indicator import Indicator
+from src.opandas_wb.wb.Observable import Observable
+from src.opandas_wb.wb.Topic import Topic
+from src.opandas_wb.wb.interface import IWbObject
 
 
 # I metodi che iniziano per '_' non dovrebbero essere chiamati dagli utenti che usano il package

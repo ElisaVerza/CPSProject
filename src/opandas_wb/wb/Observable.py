@@ -1,6 +1,5 @@
 from typing import Optional
-
-from .interface import IWbObject
+from src.opandas_wb.wb.interface import IWbObject
 
 
 class Observable(IWbObject):

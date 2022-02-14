@@ -1,6 +1,6 @@
 from typing import List, Tuple
 
-from .interface import IWbObject
+from src.opandas_wb.wb.interface import IWbObject
 
 
 class Indicator(IWbObject):
