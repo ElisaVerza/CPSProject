@@ -116,6 +116,8 @@ def all_observable_of_indicator(indicator_id: str, country: str = None, force_up
         if len(observable_list) > 0:
             return observable_list
     observable_list: List[Observable] = download_wb.download_observables_of_indicator(indicator_id, country)
+
+    # ordino la lista di osservabili
     observable_list.sort(key=lambda o: o.date, reverse=False)
     db.save_observable(observable_list)
     return observable_list

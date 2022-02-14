@@ -13,10 +13,16 @@ class DBTestCase(unittest.TestCase):
         self.assertIsNotNone(self.db.conn)  # controllo che la connessione non sia None
 
     def test_observables(self):
+        # prendo tutti gli osservabili dell'indicatore da world bank
         wb_obs = all_observable_of_indicator("AG.AGR.TRAC.NO", "usa")
         self.assertTrue(len(wb_obs) > 0)
+        # prendo tutti gli osservabili dell'indicatore dal database
         db_obs = self.db.get_observables_of_indicator("AG.AGR.TRAC.NO", "usa")
+
+        # controllo che siano presenti dati
         self.assertTrue(len(db_obs) > 0)
+
+        # controllo che tutti gli osservabili di WB e DB siano gli stessi
         self.assertListEqual(wb_obs, db_obs)
 
     def test_topic(self):

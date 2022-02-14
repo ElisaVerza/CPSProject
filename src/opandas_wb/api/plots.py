@@ -14,6 +14,7 @@ def multi_indicator_plot(indicator_country: List[Tuple[str, str]]) -> Any:
     :return: il plot da mostrare con .show()
     """
     observable_list = []
+    # prendo le serie di osservabili di ciascun indicatore e le salvo in una lista
     for (ind, country) in indicator_country:
         series: List[Observable] = fetch.all_observable_of_indicator(ind, country)
         observable_list.append((ind, country, series))
@@ -92,6 +93,8 @@ def cmp_scatter_plot(ind_country_x: Tuple[str, str], ind_country_y: Tuple[str, s
     observables_x = [o for o in observables_x if o.value is not None]
     observables_y = [o for o in observables_y if o.value is not None]
 
+    # Eliminiamo i valori se l'anno dell'osservabile non è presente nell'altra serie di osservabili
+    # in questo modo le due serie hanno la stessa dimensione
     list_x: List[Observable] = []
     for i in range(len(observables_x)):
         # se l'anno di x è inclusa negli anni di y, aggiungo l' observable alla lista x

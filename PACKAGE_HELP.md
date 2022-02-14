@@ -1,7 +1,7 @@
 # Creazione del package
 1. Aggiunti i file LICENCE (MIT), pyproject.toml, setup.cfg
-2. Creata directory src/wb con all'interno \_\_init\_\_.py
-3. I file del progetto sono tutti presenti nella cartella del package.
+2. Creata directory src/opandas_wb con all'interno \_\_init\_\_.py
+3. I file del progetto sono presenti nei sottopackage api, sqlite, wb.
 4. `python3 -m build` per impacchettare il package
 5. Per fare l'upload:
    - Su TestPyPI (test): `python3 -m twine upload --repository testpypi dist/*`

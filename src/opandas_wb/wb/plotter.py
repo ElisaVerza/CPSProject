@@ -45,9 +45,12 @@ def moving_avg(obs: List[Observable], w: int):
 
     # ricavo i valori non nulli
     val: ndarray = np.array([o.value for o in obs if o.value is not None])
+
+    # somma i primi w valori
     for i in range(w):
         finestra += val[i]
 
+    # calcola i punti della media mobile, dividendo per la dimensione della finestra
     for i in range(w, len(val)):
         points.append(finestra / w)
         finestra = finestra + val[i] - val[i - w]
@@ -126,15 +129,21 @@ def regression_rect(obs: List[Observable]):
     y_value = np.array([o.value for o in obs if o.value is not None])
     x_value = x_value.astype(np.int)
     y_value = y_value.astype(np.int)
+
+    # calcolo le medie campionarie
     x_mean = x_value.mean()
     y_mean = y_value.mean()
 
+    # calcolo il numeratore e il denominatore del coefficiente b1 (coefficiente angolare)
     b1_num = ((x_value - x_mean) * (y_value - y_mean)).sum()
     b1_den = ((x_value - x_mean) ** 2).sum()
     b1 = b1_num / b1_den
+
+    # calcolo il termine noto b0 della retta di regressione
     b0 = y_mean - (b1 * x_mean)
-    points = [b0 + round(b1, 3) * i for i in x_value]
-    # fig, ax = plt.subplots()
+
+    # calcolo la lista dei punti
+    points = [b0 + round(b1, 3) * xk for xk in x_value]
     regr_line, = plt.plot(x_value, points, marker=None)
     data_line = plt.scatter(x_value, y_value, color="orange", marker='.')
     modify_plot([regr_line, data_line], [("Regression Rect", obs[0].country), (obs[0].indicator_id, obs[0].country)],

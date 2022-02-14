@@ -13,6 +13,11 @@ FORMAT_OBSERVABLE_URL = 'https://api.worldbank.org/v2/country/{}/indicator/{}?fo
 
 
 def download_topic(topic_id: int) -> Optional[Topic]:
+    """
+    Scarica tramite le API Worldbank un singolo topic, dato il suo id
+    :param topic_id: id del topic
+    :return: un oggetto Topic, se la API ha avuto successo, altrimenti None
+    """
     try:
         r: requests.Response = requests.get(TOPIC_BASE_URL + '?id={}&format=json'.format(topic_id),
                                             allow_redirects=True)
@@ -29,7 +34,7 @@ def download_all_topics() -> List[Topic]:
     """
     Anche se permette di scaricare tutti i Topic WorldBank,
     l'utente dovrebbe utilizzare fetch.all_topics() perché sfrutta il database come cache
-    :return:
+    :return: lista di tutti i Topics trovati
     """
     try:
         # Scarico json dei topic
@@ -48,6 +53,11 @@ def download_all_topics() -> List[Topic]:
 
 
 def download_indicators_for_topic(top: Topic) -> List[Indicator]:
+    """
+    Scarica tutti gli indicatori che riguardano un Topic
+    :param top: un oggetto Topic
+    :return: Lista degli indicatori che riguardano il topic dato in input
+    """
     try:
         # Scarico json degli indicatori per topic
         r: requests.Response = requests.get(FORMAT_INDICATOR_URL.format(top.topic_id, 1), allow_redirects=True)
@@ -92,6 +102,12 @@ def download_indicator(indicator_id: str) -> Optional[Indicator]:
 
 
 def download_observables_of_indicator(i: str, country: str) -> List[Observable]:
+    """
+    Scarica da WorldBank tutti gli osservabili di un indicatore e di una nazione
+    :param i: id dell'indicatore
+    :param country: stringa di 3 caratteri che identifica la nazione (es. usa)
+    :return: la lista di oggetti Observable trovati
+    """
     # Scarico json degli osservatori per indicatore e paese
     try:
         r: requests.Response = requests.get(FORMAT_OBSERVABLE_URL.format(country, i, 1), allow_redirects=True)

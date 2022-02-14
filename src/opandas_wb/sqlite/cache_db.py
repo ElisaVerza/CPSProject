@@ -68,6 +68,11 @@ class CacheDB:
             logging.debug("Chiusa la connessione con il cache db")
 
     def _save_one(self, insert_str: str, object_tuple: Tuple):
+        """
+        Salva un oggetto generico nel database
+        :param insert_str: query INSERT o REPLACE
+        :param object_tuple: argomento della query
+        """
         cursor = self.conn.cursor()
         try:
             cursor.execute(insert_str, object_tuple)
@@ -79,6 +84,11 @@ class CacheDB:
             cursor.close()
 
     def _save_all(self, insert_str: str, all_objects: List):
+        """
+        Salva una lista di oggetti generici nel database
+        :param insert_str: query INSERT o REPLACE
+        :param all_objects: lista di tuple che rappresentano gli oggetti oppure oggetti IWbObject
+        """
         cursor = self.conn.cursor()
         try:
             for o in all_objects:
@@ -94,12 +104,17 @@ class CacheDB:
             cursor.close()
 
     def _get_one(self, query_str: str, query_arg: Dict) -> Tuple:
+        """
+        Ricava una riga dal database
+        :param query_str: query di select
+        :param query_arg: argomento della query
+        :return: tupla che rappresenta la riga
+        """
         cursor = self.conn.cursor()
         result = None
         try:
             cursor.execute(query_str, query_arg)
             result = cursor.fetchone()
-            # result = Topic(obj_tuple[0], obj_tuple[1], obj_tuple[2])  # topic_tuple puo essere nulla
         except sqlite3.Error as error:
             logging.error("Query fallita: ", query_str + str(query_arg), error)
         except TypeError:
@@ -110,6 +125,12 @@ class CacheDB:
         return result
 
     def _get_all(self, query_str: str, arg=None) -> List[Tuple]:
+        """
+        Esegue una query generica
+        :param query_str: query di select
+        :param arg: argomento della query
+        :return: tupla che rappresenta la riga
+        """
         cursor = self.conn.cursor()
         result = []
         try:
@@ -126,6 +147,11 @@ class CacheDB:
         return result
 
     def _update_one(self, update_str: str, object_tuple: Tuple):
+        """
+        Aggiorna una riga generica
+        :param update_str: query di aggiornamento
+        :param object_tuple: tupla di aggiornamento
+        """
         cursor = self.conn.cursor()
         try:
             cursor.execute(update_str, object_tuple)
@@ -136,6 +162,11 @@ class CacheDB:
             cursor.close()
 
     def _update_all(self, update_str: str, all_object: List):
+        """
+        Aggiorna una tabella con tutti gli oggetti nella lista
+        :param update_str: stringa di UPDATE
+        :param all_object: tutti gli oggetti da aggiornare
+        """
         cursor = self.conn.cursor()
         try:
             for o in all_object:
@@ -164,6 +195,10 @@ class CacheDB:
             cursor.close()
 
     def _truncate(self, table: str):
+        """
+        Elimina tutti i contenuti di una tabella
+        :param table: il nome della tabella
+        """
         cursor = self.conn.cursor()
         try:
             cursor.execute("DELETE FROM {} WHERE TRUE".format(table))
@@ -334,6 +369,10 @@ class CacheDB:
         self._save_all(const.INSERT_INDICATOR_TOPICS, i.indicator_topic_list())
 
     def update_observable(self, o: List[Observable]):
+        """
+        Aggiorna una lista di osservabili
+        :param o: lista di osservabili
+        """
         self._update_all(const.UPDATE_OBSERVABLES, o)
 
 
