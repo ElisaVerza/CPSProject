@@ -2,10 +2,10 @@ import logging
 import unittest
 from typing import List
 
-from opandas_wb.api import fetch
-from opandas_wb.sqlite import cache_db
-from opandas_wb.wb.Indicator import Indicator
-from opandas_wb.wb.Observable import Observable
+from src.opandas_wb.api import fetch
+from src.opandas_wb.sqlite import cache_db
+from src.opandas_wb.wb.Indicator import Indicator
+from src.opandas_wb.wb.Observable import Observable
 
 
 class ApiTestCase(unittest.TestCase):
